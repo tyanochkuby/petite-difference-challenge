@@ -3,7 +3,8 @@ import torch
 from torch import nn
 from sklearn.feature_extraction.text import TfidfVectorizer
 
-raw_data = pd.read_csv('gender-classifier-DFE-791531.csv')
+
+raw_data = pd.read_csv(r'D:\hoojnia\py\UM\petite-difference-challenge\gender-classifier-DFE-791531.csv', encoding='MacRoman')
 
 y = raw_data['gender'].apply(
     lambda gender: 0 if gender == 'male' else 1
@@ -15,12 +16,14 @@ data = pd.DataFrame({
 })
 tfidf = TfidfVectorizer(
     ngram_range=(1,3),
-    stop_words = 'polish',
+    stop_words = 'english',
     max_features=2000
 )
 X = tfidf.fit_transform(tweets)
 print(f'X shape: {X.shape}')
 
+X = X.toarray() 
+y = y.to_numpy()
 X = torch.from_numpy(X).type(torch.float)
 y = torch.from_numpy(y).type(torch.float)
 
@@ -35,9 +38,9 @@ print(device)
 class ModelClass(nn.Module):
     def __init__(self):
         super().__init__()
-        self.layer_1 = nn.Linear(in_features=2, out_features=10)
-        self.layer_2 = nn.Linear(in_features=10, out_features=10)
-        self.layer_3 = nn.Linear(in_features=10, out_features=1)
+        self.layer_1 = nn.Linear(in_features=2000, out_features=5000)
+        self.layer_2 = nn.Linear(in_features=5000, out_features=1000)
+        self.layer_3 = nn.Linear(in_features=1000, out_features=1)
         self.relu = nn.ReLU() # <- add in ReLU activation function
         # Can also put sigmoid in the model 
         # This would mean you don't need to use it on the predictions
