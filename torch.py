@@ -1,29 +1,10 @@
-import pandas as pd 
+import data
 import torch
 from torch import nn
-from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-raw_data = pd.read_csv(r'D:\hoojnia\py\UM\petite-difference-challenge\gender-classifier-DFE-791531.csv', encoding='MacRoman')
 
-y = raw_data['gender'].apply(
-    lambda gender: 0 if gender == 'male' else 1
-)
-tweets = raw_data['text'].to_numpy()
-data = pd.DataFrame({
-    'X': raw_data['text'],
-    'y': raw_data['gender']
-})
-tfidf = TfidfVectorizer(
-    ngram_range=(1,3),
-    stop_words = 'english',
-    max_features=2000
-)
-X = tfidf.fit_transform(tweets)
-print(f'X shape: {X.shape}')
-
-X = X.toarray() 
-y = y.to_numpy()
+X, y = data.get_data()
 X = torch.from_numpy(X).type(torch.float)
 y = torch.from_numpy(y).type(torch.float)
 
